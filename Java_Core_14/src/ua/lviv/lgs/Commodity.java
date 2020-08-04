@@ -1,6 +1,7 @@
 package ua.lviv.lgs;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Commodity 
 {
@@ -31,24 +32,14 @@ public class Commodity
 	
 	public void removeProduct()
 	{
-		System.out.println("Adding a product");
+		System.out.println("Removing a product");
 		
 		String name = scan.next();
 		int length = scan.nextInt();
 		int width = scan.nextInt();
 		int weigth = scan.nextInt();
 		
-		Iterator<Goods> iterator = goods.iterator();
-		
-		while(iterator.hasNext())
-		{
-			Goods product = iterator.next();
-			
-			if(product.equals(new Goods(name, length, width, weigth)))
-			{
-				iterator.remove();
-			}
-		}
+		goods = (ArrayList<Goods>) goods.stream().filter(b -> !b.equals(new Goods(name, length, width, weigth))).collect(Collectors.toList());
 	}
 	
 	public void replaceProduct()
@@ -60,21 +51,7 @@ public class Commodity
 		int width = scan.nextInt();
 		int weigth = scan.nextInt();
 		
-		Iterator<Goods> iterator = goods.iterator();
-		int index = 0;
-		int counter = 0;
-		
-		while(iterator.hasNext())
-		{
-			Goods product = iterator.next();
-			
-			if(product.equals(new Goods(name, length, width, weigth)))
-			{
-				index = counter;
-				iterator.remove();
-			}
-			counter++;
-		}
+		Goods productToReplace = new Goods(name, length, width, weigth);
 		
 		System.out.println("With a product");
 		
@@ -83,7 +60,15 @@ public class Commodity
 		width = scan.nextInt();
 		weigth = scan.nextInt();
 		
-		goods.add(index, new Goods(name, length, width, weigth));
+		Goods replacement = new Goods(name, length, width, weigth);
+		
+		goods = (ArrayList<Goods>) goods.stream().map(b -> {
+			if(b.equals(productToReplace)) {
+				return replacement;
+			} else {
+				return b;
+			}
+		}).collect(Collectors.toList());
 	}
 	
 	public void sortByName()
